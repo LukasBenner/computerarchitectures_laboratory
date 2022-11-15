@@ -28,7 +28,10 @@ void loop() {
   }
 }
 
+void externLed();
+
 int main(void) {
     setup();
-    loop();
+    //loop();
+    externLed();
 }
