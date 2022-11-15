@@ -13,23 +13,23 @@ void walkingLed(){
      * R = U/I = 1,2V / 10mA = 120 Ohm
      * 
      * 1s / 5 = 0.2s
-     * prescaler auf 1 -> Timer auf 0x199D -> 0x199D × (1/32768Hz) = 200,1 ms
+     * prescaler auf 1 -> Timer auf 0x2000 -> 0x2000 × (1/32768Hz) = 250 ms
      * T1CON bit 1 auf 1 -> sosc
      * T1CON bit 15 auf 1 -> Timer ist an
      * T1CON bit 7 auf 0 -> MUX nimmt Eingang 0
      * OSCCON bit 1 auf 1 -> SOSC ist an
      * */
     TRISACLR = 0b0111110000000000;  //LEDs as output
-    TRISACLR = 0x7C00;              // LED is off
+    TRISACLR = 0x7C00;              // LEDs are off
     
     T1CON = 0x0;                // Stops the Timer1 and resets the control register
     TMR1 = 0x0;                 // Clear timer register
-    IFS0bits.T1IF = 0;              // Clear Interrupt status register
-    OSCCONbits.SOSCEN = 1;          // Enable SOSC Source
-    T1CON = T1CON = 0x2;        // Timer source to sosc
-    T1CONbits.TCKPS = 0b00;         // Prescaler to 1
-    PR1SET = 0x199D;            // Timer to 0x199D
-    T1CONSET = 0x8000;          // Start Timer
+    IFS0bits.T1IF = 0;          // Clear int status reg
+    OSCCONbits.SOSCEN = 1;      // Enable SOSC Source        
+    T1CONbits.TCS = 1;          // Timer source to sosc
+    T1CONbits.TCKPS = 0b00;     // Prescaler to 1
+    PR1 = 0x2000;               // Timer to 0x2000
+    T1CONbits.ON = 1;           // Start Timer
 
     LATASET = 0x0400;           // turn on led 10
     
@@ -43,14 +43,14 @@ void walkingLed(){
             /*
              * Shift baseAddress by i and turn LED off
              * Increment i by direction
-             * If i is 5 or 0, change direction
+             * If i is 4 or 0, change direction
              */
             //turn off current LED
             LATACLR = baseAddress << i;
             //increment i
             i += direction;
             //check modulo
-            if(i % 5 == 0)
+            if(i % 4 == 0)
             {
                 //turn direction
                 direction = -direction;

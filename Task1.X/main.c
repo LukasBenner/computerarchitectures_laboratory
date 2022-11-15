@@ -29,9 +29,15 @@ void loop() {
 }
 
 void externLed();
+void externLedBlink();
+void walkingLed();
+void pwmLed();
 
 int main(void) {
     setup();
     //loop();
-    externLed();
+    //externLed();
+    //externLedBlink();
+    //walkingLed();
+    pwmLed();
 }
