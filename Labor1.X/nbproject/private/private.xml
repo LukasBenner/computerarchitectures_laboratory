@@ -5,6 +5,9 @@
         <group>
             <file>file:/home/lukas/Projects/Rechnerarchitektur/Task1.X/pwmLed.c</file>
             <file>file:/home/lukas/Projects/Rechnerarchitektur/Task1.X/walking_led.c</file>
+            <file>file:/home/lukas/Projects/Rechnerarchitektur/Task1.X/externLed.c</file>
+            <file>file:/home/lukas/Projects/Rechnerarchitektur/Task1.X/system.c</file>
+            <file>file:/home/lukas/Projects/Rechnerarchitektur/Task1.X/main.c</file>
         </group>
     </open-files>
 </project-private>

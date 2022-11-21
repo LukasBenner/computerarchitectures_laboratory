@@ -15,12 +15,6 @@ void pwmLed(){
      * 3,3V - 2,1V = 1,2V
      * R = U/I = 1,2V / 10mA = 120 Ohm
      * 
-     * 1s / 5 = 0.2s
-     * prescaler auf 1 -> Timer auf 0x199D -> 0x199D × (1/32768Hz) = 200,1 ms
-     * T1CON bit 1 auf 1 -> sosc
-     * T1CON bit 15 auf 1 -> Timer ist an
-     * T1CON bit 7 auf 0 -> MUX nimmt Eingang 0
-     * OSCCON bit 1 auf 1 -> SOSC ist an
      * */
     
     
