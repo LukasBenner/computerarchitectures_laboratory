@@ -15,6 +15,10 @@
       <itemPath>7segment.c</itemPath>
       <itemPath>system.c</itemPath>
       <itemPath>main.c</itemPath>
+      <itemPath>mod10Counter.c</itemPath>
+      <itemPath>twoDigitCounter.c</itemPath>
+      <itemPath>digitalThermometer.c</itemPath>
+      <itemPath>digitalInterruptThermometer.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
