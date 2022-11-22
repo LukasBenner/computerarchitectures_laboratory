@@ -25,8 +25,8 @@ void digitalInterruptThermometer();
 
 int main(void) {
     setup();    
-    mod10Counter();
+    //mod10Counter();
     //twoDigitCounter();
     //digitalThermometer();
-    //digitalInterruptThermometer();
+    digitalInterruptThermometer();
 }

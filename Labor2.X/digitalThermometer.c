@@ -15,9 +15,9 @@ void initADC(){
     AD1CHSbits.CH0NA = 0b000;   //VREFL as neg input
     AD1CHSbits.CH0SA = 0b01100;  //C0, AN12 as pos input
     AD1CON1bits.MODE12 = 1;
-    AD1CON1bits.FORM = 0b000;
+    AD1CON1bits.FORM = 0b000;   // uINT 16
     
-    AD1CON3bits.ADRC = 1;
+    AD1CON3bits.ADRC = 1;       // FRC as clock
     // TAD min = 300ns
     // Set TAD to 4 * TSRC = 4 * 125 ns = 500ns
     AD1CON3bits.ADCS = 2;
@@ -27,7 +27,7 @@ void initADC(){
 
 u32 readADC(){
     AD1CON1bits.SAMP = 1;
-    delay_us(1);
+    delay_us(10);
     AD1CON1bits.SAMP = 0;
     while(AD1CON1bits.DONE == 0);
     AD1CON1bits.DONE = 0;
@@ -38,8 +38,8 @@ u32 readADC(){
 u32 scaleTemperature(u32 data){
     // 0.5V / (3.3V / (2^12)) = 620.6 -> 0°C
     // (0.01V / 1°C) / (3.3V / (2^12)) = 12.4 / 1°C
-    // temp = (81 * x - 50301) / 1000
-    u32 temp = (81 * data - 50301) / 1000;
+    // temp = (81 * x - 50080) / 1000
+    u32 temp = (81 * data - 50080) / 1000;
     return temp;
 }
 
@@ -52,7 +52,7 @@ void digitalThermometer(){
     OSCCONbits.SOSCEN = 1;      // Enable SOSC Source        
     T1CONbits.TCS = 1;          // Timer source to sosc
     T1CONbits.TCKPS = 0b10;     // Prescaler to 64
-    PR1 = 0x200;                // Timer to 2^8 = 256
+    PR1 = 0x100;                // Timer to 2^8 = 256
     // Timer is set to 1Hz
     T1CONbits.ON = 1;           // Start Timer
     
