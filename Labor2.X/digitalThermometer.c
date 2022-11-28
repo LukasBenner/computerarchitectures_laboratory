@@ -10,10 +10,13 @@ void writeTensDigit(u32 digit);
 
 void initADC(){
     AD1CON1 = 0;
-    ANSELCbits.ANSC0 = 1;
+    //ANSELCbits.ANSC0 = 1;
+    ANSELAbits.ANSA6 = 1;
+    TRISAbits.TRISA6 = 1;
     TRISCbits.TRISC0 = 1;       //C0 as analog input
     AD1CHSbits.CH0NA = 0b000;   //VREFL as neg input
-    AD1CHSbits.CH0SA = 0b01100;  //C0, AN12 as pos input
+    //AD1CHSbits.CH0SA = 0b01100;  //C0, AN12 as pos input
+    AD1CHSbits.CH0SA = 0b010011;
     AD1CON1bits.MODE12 = 1;
     AD1CON1bits.FORM = 0b000;   // uINT 16
     
@@ -30,7 +33,7 @@ u32 readADC(){
     delay_us(10);
     AD1CON1bits.SAMP = 0;
     while(AD1CON1bits.DONE == 0);
-    AD1CON1bits.DONE = 0;
+    //AD1CON1bits.DONE = 0;
     u32 data = ADC1BUF0;
     return data;
 }

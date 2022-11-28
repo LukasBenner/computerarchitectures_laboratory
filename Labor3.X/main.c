@@ -15,18 +15,10 @@ void initDisplay();
 void setup() { 
 	SYSTEM_Initialize();  // set 24 MHz clock for CPU and Peripheral Bus
                           // clock period = 41,667 ns = 0,0417 us
-    initDisplay();
 }
 
-void mod10Counter();
-void twoDigitCounter();
-void digitalThermometer();
-void digitalInterruptThermometer();
+
 
 int main(void) {
-    setup();    
-    //mod10Counter();
-    //twoDigitCounter();
-    digitalThermometer();
-    //digitalInterruptThermometer();
+    setup();
 }
