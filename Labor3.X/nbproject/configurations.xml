@@ -18,6 +18,7 @@
       <itemPath>system.c</itemPath>
       <itemPath>saegezahn.c</itemPath>
       <itemPath>sinusGen.c</itemPath>
+      <itemPath>melody.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

@@ -3,15 +3,13 @@
 #include <sys/attribs.h>
 #include "sinus.h"
 
-typedef unsigned char u8;
-typedef unsigned int u32;
 
 void delay_us();
 uint16_t readADC();
 void initVoltageRefUnit();
 void initADC();
 
-u8 ind = 0;
+uint8_t ind = 0;
 
 void sinusGen(){
     initVoltageRefUnit();
@@ -43,7 +41,7 @@ void sinusGen(){
 void nextSinusOutput(){
     ind++;                                // increment
     ind = ind % 100;                         // mod 32
-    u8 sinData = sinus[ind];
+    uint8_t sinData = sinus[ind];
     DAC1CONbits.DACDAT = sinData;             // write back
 }
 
