@@ -28,7 +28,6 @@ uint8_t melodyLength = 8;
 
 void melody(){
     initVoltageRefUnit();
-    initADC();
    
     T1CON = 0x0;                // Stops the Timer1 and resets the control register
     TMR1 = 0x0;                 // Clear timer register
@@ -45,7 +44,7 @@ void melody(){
     T1CONbits.ON = 1;           // Start Timer
     
     while(1){
-        for(int i = 0; i < melody; i++){
+        for(int i = 0; i < melodyLength; i++){
             Note note = melodyStruct[i];
             uint8_t freq = note.freq;
             uint8_t duration = note.duration;
@@ -64,8 +63,8 @@ void melody(){
 
 void nextSinusOutput();
 
-void __ISR(_TIMER_1_VECTOR, IPL3SOFT) melodyHandler(void)
+/*void __ISR(_TIMER_1_VECTOR, IPL3SOFT) melodyHandler(void)
 {
     nextSinusOutput();
     IFS0bits.T1IF = 0;
-}
+}*/

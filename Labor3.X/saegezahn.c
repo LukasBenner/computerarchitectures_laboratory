@@ -11,7 +11,7 @@ void initVoltageRefUnit(){
     
 }
 
-void saegezahnDelay(){
+void saegeZahnDelay(){
     initVoltageRefUnit();
     while(1){
         for (int i = 0; i<32; i++){
@@ -100,8 +100,8 @@ void nextOutput(){
     DAC1CONbits.DACDAT = i;             // write back
 }
 
-/*void __ISR(_TIMER_1_VECTOR, IPL3SOFT) saegeZahnHandler(void)
+void __ISR(_TIMER_1_VECTOR, IPL3SOFT) saegeZahnHandler(void)
 {
     nextOutput();
     IFS0bits.T1IF = 0;
-}*/
+}

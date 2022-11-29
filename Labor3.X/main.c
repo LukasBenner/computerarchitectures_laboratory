@@ -17,8 +17,9 @@ void setup() {
                           // clock period = 41,667 ns = 0,0417 us
 }
 
-
+void saegeZahnDelay();
 
 int main(void) {
     setup();
+    saegeZahnDelay();
 }

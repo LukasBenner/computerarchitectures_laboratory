@@ -34,7 +34,7 @@
         <targetDevice>PIC32MM0256GPM064</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool>pkob4hybrid</platformTool>
+        <platformTool>PKOBSKDEPlatformTool</platformTool>
         <languageToolchain>XC32</languageToolchain>
         <languageToolchainVersion>4.20</languageToolchainVersion>
         <platform>2</platform>
