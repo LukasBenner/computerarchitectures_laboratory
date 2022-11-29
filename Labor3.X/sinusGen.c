@@ -66,8 +66,8 @@ void nextSinusASMOutput(){
     );
 }
 
-void __ISR(_TIMER_1_VECTOR, IPL3SOFT) sinusHandler(void)
+/*void __ISR(_TIMER_1_VECTOR, IPL3SOFT) sinusHandler(void)
 {
     nextSinusASMOutput();
     IFS0bits.T1IF = 0;
-}
+}*/

@@ -24,7 +24,7 @@ Note melodyStruct[] = {
     {NOTE_C6, 4}
 };
 
-uint8_t melodyLength = 8;
+uint8_t melodyLength = 27;
 
 void melody(){
     initVoltageRefUnit();
@@ -46,12 +46,21 @@ void melody(){
     while(1){
         for(int i = 0; i < melodyLength; i++){
             Note note = melodyStruct[i];
-            uint8_t freq = note.freq;
-            uint8_t duration = note.duration;
-            uint16_t timerInterval = 24000000 / (freq * 100);   // 24MHz  / (3951Hz × 100)
+            uint32_t freq = note.freq;
+            uint32_t duration = note.duration;
+            uint32_t timerInterval;
+            if(freq == 0){
+                T1CONbits.ON = 0;
+                DAC1CONbits.DACDAT = 0;
+            }
+            else{
+                T1CONbits.ON = 1;
+                timerInterval = 24000000 / (freq * 100);   // 24MHz  / (3951Hz × 100)
+            }
             PR1 = timerInterval;
             uint32_t durationInUs = 1000000 / duration;
             delay_us(durationInUs);
+            
         }
         T1CONbits.ON = 0;           // StopTimer
         delay_us(2000000);
@@ -60,11 +69,10 @@ void melody(){
     
 }
 
-
 void nextSinusOutput();
 
-/*void __ISR(_TIMER_1_VECTOR, IPL3SOFT) melodyHandler(void)
+void __ISR(_TIMER_1_VECTOR, IPL3SOFT) melodyHandler(void)
 {
     nextSinusOutput();
     IFS0bits.T1IF = 0;
-}*/
+}

@@ -21,11 +21,13 @@ void saegeZahnDelay();
 void saegeZahnInterrupt();
 void saegeZahnVariableInterrupt();
 void sinusGen();
+void melody();
 
 int main(void) {
     setup();
     //saegeZahnDelay();
     //saegeZahnInterrupt();
     //saegeZahnVariableInterrupt();
-    sinusGen();
+    //sinusGen();
+    melody();
 }
