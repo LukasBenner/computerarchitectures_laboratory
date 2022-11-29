@@ -51,14 +51,15 @@ void nextSinusASMOutput(){
         "addi $t0, %0, 1           \n\t"    // ind++
         "bne $t0, %2, 1f           \n\t"    // ind != 100 ? 1f : weiter
         "nop                       \n\t"
-        "and $t0, $zero, $zero     \n\t"    // ind = 0
+        "add $t0, $zero, $zero     \n\t"    // ind = 0
         "1:                        \n\t"
-        "add %0, $t0, $zero         \n\t"    // write t0 back to %0
-        "la $t1, %1                \n\t"    // address of sinus in t1
-        "add $t1, $t1, $t0         \n\t"    // t1 + i -> &sinus[i]
-        "lw $t0, 0($t1)            \n\t"    // t0 = sinus[i]
+        "add %0, $t0, $zero        \n\t"    // write t0 back to %0
+        "la $t2, %1                \n\t"    // t2 = &sinus
+        "add $t2, $t0, $t2         \n\t"    // t2 = &sinus[i]
         "lw $t1, DAC1CON           \n\t"    // t1 hat DAC1CON
+        "lb $t0, 0($t2)            \n\t"
         "ins $t1, $t0, 16, 5       \n\t"    // DAC1CONbits.DACDAT = t0
+        "sw $t1, DAC1CON           \n\t"
         : "+r" (ind)
         : "m"(sinus), "r"(numberSteps)
         : "t0", "t1", "t2"
@@ -67,6 +68,6 @@ void nextSinusASMOutput(){
 
 void __ISR(_TIMER_1_VECTOR, IPL3SOFT) sinusHandler(void)
 {
-    nextSinusOutput();
+    nextSinusASMOutput();
     IFS0bits.T1IF = 0;
 }
