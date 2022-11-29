@@ -57,7 +57,7 @@ void initADC(){
 
 uint16_t readADC(){
     AD1CON1bits.SAMP = 1;
-    delay_us(10);
+    delay_us(1000);
     AD1CON1bits.SAMP = 0;
     while(AD1CON1bits.DONE == 0);
     uint16_t data = ADC1BUF0;
@@ -99,8 +99,8 @@ void nextOutput(){
     DAC1CONbits.DACDAT = i;             // write back
 }
 
-void __ISR(_TIMER_1_VECTOR, IPL3SOFT) saegeZahnHandler(void)
+/*void __ISR(_TIMER_1_VECTOR, IPL3SOFT) saegeZahnHandler(void)
 {
     nextOutput();
     IFS0bits.T1IF = 0;
-}
+}*/

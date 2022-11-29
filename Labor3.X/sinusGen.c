@@ -26,8 +26,8 @@ void sinusGen(){
     T1CONbits.TCS = 0;          // Internal PB Clock   24 MHz / 16kHz = 1500
     T1CONbits.TCKPS = 0b00;     // prescaler to 1
     PR1 = 1500;                 // Timer to 1500
-    // Timer is set to 1Hz
     T1CONbits.ON = 1;           // Start Timer
+    
     
     while(1){
         uint16_t adcVal = readADC();
@@ -40,7 +40,7 @@ void sinusGen(){
 
 void nextSinusOutput(){
     ind++;                                // increment
-    ind = ind % 100;                         // mod 32
+    ind = ind % 100;                         // mod 100
     uint8_t sinData = sinus[ind];
     DAC1CONbits.DACDAT = sinData;             // write back
 }
@@ -65,8 +65,8 @@ void nextSinusASMOutput(){
     );
 }
 
-/*void __ISR(_TIMER_1_VECTOR, IPL3SOFT) sinusHandler(void)
+void __ISR(_TIMER_1_VECTOR, IPL3SOFT) sinusHandler(void)
 {
     nextSinusOutput();
     IFS0bits.T1IF = 0;
-}*/
+}
