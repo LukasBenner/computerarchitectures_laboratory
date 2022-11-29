@@ -11,7 +11,7 @@ void initVoltageRefUnit(){
     
 }
 
-void saegeZahnDelay(){
+void saegeZahnDelay(){          // C < (1/ (500Hz × 32) / 4) / 1kohm -> 4.7nF
     initVoltageRefUnit();
     while(1){
         for (int i = 0; i<32; i++){
@@ -21,7 +21,7 @@ void saegeZahnDelay(){
     }
 }
 
-void saegezahnInterrupt(){
+void saegeZahnInterrupt(){
     
     initVoltageRefUnit();
    
@@ -44,7 +44,7 @@ void initADC(){
     AD1CON1 = 0;
     ANSELCbits.ANSC8 = 1;       //C8 as analog input
     TRISCbits.TRISC8 = 1;       //C8 as analog input
-    AD1CHSbits.CH0SA = 0b01110;  //C0, AN12 as pos input
+    AD1CHSbits.CH0SA = 14;      //C8, AN14 as pos input
     AD1CON1bits.MODE12 = 1;
     AD1CON1bits.FORM = 0b000;   // uINT 16
     
@@ -60,12 +60,11 @@ uint16_t readADC(){
     delay_us(10);
     AD1CON1bits.SAMP = 0;
     while(AD1CON1bits.DONE == 0);
-    //AD1CON1bits.DONE = 0;
     uint16_t data = ADC1BUF0;
     return data;
 }
 
-void saegezahnVariableInterrupt(){
+void saegeZahnVariableInterrupt(){
     
     initVoltageRefUnit();
     initADC();
@@ -96,7 +95,7 @@ void saegezahnVariableInterrupt(){
 void nextOutput(){
     uint8_t i = DAC1CONbits.DACDAT;     // load
     i++;                                // increment
-    i = i % 32;                         // mod 32
+    i = i % 32;                         // mod 32PR1
     DAC1CONbits.DACDAT = i;             // write back
 }
 

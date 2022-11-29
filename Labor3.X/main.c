@@ -18,8 +18,12 @@ void setup() {
 }
 
 void saegeZahnDelay();
+void saegeZahnInterrupt();
+void saegeZahnVariableInterrupt();
 
 int main(void) {
     setup();
-    saegeZahnDelay();
+    //saegeZahnDelay();
+    //saegeZahnInterrupt();
+    saegeZahnVariableInterrupt();
 }
