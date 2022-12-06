@@ -20,7 +20,6 @@ void initI2C(){
     
     
     I2C3CONbits.ON = 1;         // start I2C
-    I2C3CONbits.I2CEN = 1;
 }
 
 

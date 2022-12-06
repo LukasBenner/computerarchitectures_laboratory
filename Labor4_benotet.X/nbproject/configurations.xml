@@ -15,6 +15,7 @@
       <itemPath>main.c</itemPath>
       <itemPath>LCD.c</itemPath>
       <itemPath>system.c</itemPath>
+      <itemPath>ultrasonic.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -201,6 +202,9 @@
         <property key="stack-smashing" value=""/>
         <property key="wpo-lto" value="false"/>
       </C32Global>
+      <PKOBSKDEPlatformTool>
+        <property key="firmware.download.all" value="false"/>
+      </PKOBSKDEPlatformTool>
     </conf>
   </confs>
 </configurationDescriptor>
