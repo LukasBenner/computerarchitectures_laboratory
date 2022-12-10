@@ -35,22 +35,11 @@ int main(int argc, char** argv) {
     setup();
     
     initUltraSonic();
-    initLCD();
-    clearLCD();
-    IFS2bits.CCP2IF = 0;
+    //initLCD();
+    //clearLCD();
     
     while(1){
-        if(IFS2bits.CCP2IF = 1){
-            setCursor(0,0);
-            u32 lowerValue = CCP2BUF;
-            u32 higherValue = CCP2BUF;
-            u32 diff = higherValue - lowerValue;
-            diff = diff >> 1;   //halbe strecke
-            u32 distance = diff * 9152 / 100000;
-            char str[10];
-            sprintf(str, "%d", distance);
-            writeLCD(str, 10);
-            
+        if(IFS2bits.CCP2IF == 1){
             IFS2bits.CCP2IF = 0;
         }
     }

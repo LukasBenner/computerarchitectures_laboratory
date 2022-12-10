@@ -31,7 +31,7 @@
         <targetDevice>PIC32MM0256GPM064</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool>PKOBSKDEPlatformTool</platformTool>
+        <platformTool>Simulator</platformTool>
         <languageToolchain>XC32</languageToolchain>
         <languageToolchainVersion>4.20</languageToolchainVersion>
         <platform>2</platform>
@@ -205,6 +205,9 @@
       <PKOBSKDEPlatformTool>
         <property key="firmware.download.all" value="false"/>
       </PKOBSKDEPlatformTool>
+      <Tool>
+        <property key="firmware.download.all" value="false"/>
+      </Tool>
     </conf>
   </confs>
 </configurationDescriptor>
