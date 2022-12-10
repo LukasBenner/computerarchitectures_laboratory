@@ -23,6 +23,8 @@ void writeLCD (char* str, u32 len);
 void setCursor(u8 row, u8 col);
 void delay_us(unsigned int us);
 void initUltraSonic();
+u32 readSensorFallBack();
+void initFallBackUltraSonic();
 
 
 void setup() { 
@@ -34,15 +36,20 @@ void setup() {
 int main(int argc, char** argv) {
     setup();
     
-    initUltraSonic();
+    //initUltraSonic();
+    initFallBackUltraSonic();
+    
     //initLCD();
     //clearLCD();
     
     while(1){
-        if(IFS2bits.CCP2IF == 1){
-            IFS2bits.CCP2IF = 0;
-        }
+        u32 distance = readSensorFallBack();
+        char str[10];
+        sprintf(str, "%d", distance);
+        //writeLCD(str, 10);
     }
+    
+
     
     return (EXIT_SUCCESS);
 }

@@ -7,6 +7,7 @@ typedef unsigned char u8;
 typedef unsigned int u32;
 
 void writeLCD (char* str, u32 len);
+void delay_us(unsigned int us);
 
 void initUltraSonic(){
     // Output Compare PWM Signal
@@ -59,7 +60,7 @@ void initUltraSonic(){
     CCP2CON1bits.ON = 1;        // Enable CCP/input capture
 }
 
-void readSensor(){
+u32 readSensor(){
     //setCursor(0,0);
     u32 lowerValue = CCP2BUF;
     u32 higherValue = CCP2BUF;
@@ -70,27 +71,55 @@ void readSensor(){
     // 25000 × (24M / 64) / 2 × (64/24MHz) × 343.2m/s) / 1000000 = 429 cm (max distance)
     // (64/24M) × 343.2) = 
     u32 distance = diff * 9152 / 100000;
-    char str[10];
-    sprintf(str, "%d", distance);
-    //writeLCD(str, 10);
-
-    IFS2bits.CCP2IF = 0;
+    return distance;
 }
 
-/*
-void readSensorASM(){
+
+u32 readSensorASM(){
+    u32 value = 0;
+    u32 multiplier = 9152;
     asm volatile(
-        
-        : "+r" (ind)
-        : "m"(sinus), "r"(numberSteps)
+        "la $t2, %1         \n\t"       // t2 = &CCP2BUF
+        "lh $t0, 0($t2)      \n\t"      //lowerValue
+        "lh $t1, 0($t2)      \n\t"      //higherValue
+        "sub $t0, $t1, $t0  \n\t"       //diff = higher - lower
+        "srl $t0, $t0, 1    \n\t"       //travelTime = diff / 2
+        "mul $t0, $t0, %2   \n\t"       //travelTime * 9152
+        "li $t1, 100000     \n\t"
+        "div $t0, $t1       \n\t"       //distance / 100000
+        "mflo %0            \n\t"
+        : "=r" (value)
+        : "m"(CCP2BUF), "r"(multiplier)
         : "t0", "t1", "t2"
     );
+    return value;
 }
-*/
 
+void initFallBackUltraSonic(){
+    TRISAbits.TRISA12 = 0;
+    TRISBbits.TRISB7 = 1;   //RB7 as input
+}
+
+u32 readSensorFallBack(){
+    LATAbits.LATA12 = 1;
+    delay_us(10);
+    LATAbits.LATA12 = 0;
+    u32 pulseWidth = 0; //in 
+    while(PORTBbits.RB7 == 0);
+    while(PORTBbits.RB7 == 1){
+        delay_us(10);
+        pulseWidth += 10;
+    }
+    pulseWidth = pulseWidth >> 1;   //halbe strecke
+    u32 distance = pulseWidth * 3432 / 100000;
+    return distance;
+}
 
 void __ISR(_CCP2_VECTOR, IPL3SOFT) inputCaptureHandler(void)
 {
-    
+    u32 distance = readSensor();
+    char str[10];
+    sprintf(str, "%d", distance);
+    writeLCD(str, 10);
     IFS2bits.CCP2IF = 0;
 }
