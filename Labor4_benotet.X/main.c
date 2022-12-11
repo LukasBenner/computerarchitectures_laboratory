@@ -32,11 +32,19 @@ u32 distance = 0;
 u8 bufferIndex = 0;
 u32 distanceBuffer[BUFFER_LENGTH];
 
+ u8 const compile_date[12]   = __DATE__;     // Mmm dd yyyy
+ u8 const compile_time[9]    = __TIME__;     // hh:mm:ss
 
+ void initTime(){
+     
+ }
+ 
+ 
 void setup() { 
 	SYSTEM_Initialize();  // set 24 MHz clock for CPU and Peripheral Bus
                           // clock period = 41,667 ns = 0,0417 us
     initI2C();
+    
 }
 
 int main(int argc, char** argv) {
@@ -65,11 +73,7 @@ int main(int argc, char** argv) {
             //writeLCD(str, 16);
             bufferIndex = 0;
         }
-          
     }
-    
-
-    
     return (EXIT_SUCCESS);
 }
 

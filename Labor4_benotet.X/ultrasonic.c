@@ -9,6 +9,8 @@ typedef unsigned int u32;
 void writeLCD (char* str, u32 len);
 void delay_us(unsigned int us);
 extern u32 distance;
+extern u8 bufferIndex;
+extern u32 distanceBuffer[];
 
 void initUltraSonic(){
     // Output Compare PWM Signal
@@ -100,9 +102,11 @@ void initFallBackUltraSonic(){
     TRISAbits.TRISA12 = 0;
     TRISBbits.TRISB7 = 1;   //RB7 as input
     
+    LATAbits.LATA12 = 0;    // init trigger signal to 0
+    
     PR2 = 0xFFFF;               // period register to max value
     T2CONbits.TCKPS = 0b100;    // prescaler 1:16
-    T2CONbits.TCS = 0;          // internal clock
+    T2CONbits.TCS = 0;          // internal clock -> 24MHz
     T2CONbits.TGATE = 0;        // Gated time accumulation is disabled
     TMR2 = 0;                   // clear timer register
     T2CONbits.ON = 1;           // start Timer
@@ -125,5 +129,9 @@ u32 readSensorFallBack(){
 void __ISR(_CCP2_VECTOR, IPL3SOFT) inputCaptureHandler(void)
 {
     distance = readSensor();
+    if(distance < 450){
+        distanceBuffer[bufferIndex] = distance;
+        bufferIndex++;
+    }
     IFS2bits.CCP2IF = 0;
 }
