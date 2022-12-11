@@ -12,36 +12,9 @@ extern u32 distance;
 extern u8 bufferIndex;
 extern u32 distanceBuffer[];
 
-void initUltraSonic(){
-    // Output Compare PWM Signal
-    
-    TRISAbits.TRISA12 = 0;
-    
-    CCP1CON1 = 0;
-    CCP1CON2 = 0;
-    CCP1CON3 = 0;
-    
-    CCP1CON1bits.CCSEL = 0; // Set MCCP operating mode (OC mode)
-    CCP1CON1bits.T32 = 0; // Set timebase width (16-bit)
-    CCP1CON1bits.MOD = 0b0101; // Set mode (Buffered Dual-Compare/PWM mode)
-    CCP1CON1bits.TMRSYNC = 0; // Set timebase synchronization (not Synchronized)
-    CCP1CON1bits.CLKSEL = 0b000; // Set the clock source (Internal Clock ~ 24MHz)
-    CCP1CON1bits.TMRPS = 0b10; // Set the clock prescaler (1:16)
-    CCP1CON1bits.TRIGEN = 0; // Set Sync/Triggered mode (Synchronous)
-    CCP1CON1bits.SYNC = 0b00000; // Select Sync/Trigger source (Self-sync)
-    //Configure MCCP output for PWM signal
-    CCP1CON2bits.OCAEN = 1; // Enable desired output signals (OC1A)
-    CCP1CON3bits.OUTM = 0b000; // Set advanced output modes (Standard output)
-    CCP1CON3bits.POLACE = 0; // Configure output polarity (Active High)
-    CCP1TMRbits.TMRL = 0x0000; // Initialize timer prior to enable module.
-    CCP1PRbits.PRL = 0xEA60; // Configure timebase period
-    CCP1RA = 0x0000; // Set the rising edge compare value
-    CCP1RB = 0xF; // Set the falling edge compare value to 10us
-    CCP1CON1bits.ON = 1; // Turn on MCCP module
-    
-    // Input Capture
+void initInputCapture(){
     TRISBbits.TRISB2 = 1;   //RB2 as input
-    ANSELBbits.ANSB2 = 1;
+    ANSELBbits.ANSB2 = 0;
     
     CCP2CON1 = 0;
     CCP2CON2 = 0;
@@ -63,6 +36,33 @@ void initUltraSonic(){
     CCP2CON1bits.ON = 1;        // Enable CCP/input capture
 }
 
+void initOutputCompare(){
+    TRISAbits.TRISA12 = 0;  // set A12 to output
+    
+    CCP1CON1bits.CCSEL = 0; // Set MCCP operating mode (OC mode)
+    CCP1CON1bits.T32 = 0; // Set timebase width (16-bit)
+    CCP1CON1bits.MOD = 0b0101; // Set mode (Buffered Dual-Compare/PWM mode)
+    CCP1CON1bits.TMRSYNC = 0; // Set timebase synchronization (not Synchronized)
+    CCP1CON1bits.CLKSEL = 0b000; // Set the clock source (Internal Clock ~ 24MHz)
+    CCP1CON1bits.TMRPS = 0b10; // Set the clock prescaler (1:16)
+    CCP1CON1bits.TRIGEN = 0; // Set Sync/Triggered mode (Synchronous)
+    CCP1CON1bits.SYNC = 0b00000; // Select Sync/Trigger source (Self-sync)
+    //Configure MCCP output for PWM signal
+    CCP1CON2bits.OCAEN = 1; // Enable desired output signals (OC1A)
+    CCP1CON3bits.OUTM = 0b000; // Set advanced output modes (Standard output)
+    CCP1CON3bits.POLACE = 0; // Configure output polarity (Active High)
+    CCP1TMRbits.TMRL = 0x0000; // Initialize timer prior to enable module.
+    CCP1PRbits.PRL = 0xFFFF; // Configure timebase period
+    CCP1RA = 0x0000; // Set the rising edge compare value
+    CCP1RB = 0xF; // Set the falling edge compare value to 10us
+    CCP1CON1bits.ON = 1; // Turn on MCCP module
+}
+
+void initUltraSonic(){
+    initOutputCompare();
+    initInputCapture();
+}
+
 u32 readSensor(){
     //setCursor(0,0);
     u32 lowerValue = CCP2BUF;
@@ -72,7 +72,7 @@ u32 readSensor(){
 
     // 125 × (24M / 64) / 2 × (64/24MHz) × 343.2m/s) / 1000000 = 2.145 cm (min distance)
     // 25000 × (24M / 64) / 2 × (64/24MHz) × 343.2m/s) / 1000000 = 429 cm (max distance)
-    // (64/24M) × 343.2) = 
+    // (64/24M) × 343.2) = 0.0009152
     u32 distance = diff * 9152 / 100000;
     return distance;
 }
@@ -99,11 +99,10 @@ u32 readSensorASM(){
 }
 
 void initFallBackUltraSonic(){
-    TRISAbits.TRISA12 = 0;
-    TRISBbits.TRISB7 = 1;   //RB7 as input
+    initOutputCompare();
     
-    LATAbits.LATA12 = 0;    // init trigger signal to 0
-    
+    TRISBbits.TRISB2 = 1;   //RB2 as input
+    ANSELBbits.ANSB2 = 0;
     PR2 = 0xFFFF;               // period register to max value
     T2CONbits.TCKPS = 0b100;    // prescaler 1:16
     T2CONbits.TCS = 0;          // internal clock -> 24MHz
@@ -113,16 +112,13 @@ void initFallBackUltraSonic(){
 }
 
 u32 readSensorFallBack(){
-    LATAbits.LATA12 = 1;
-    delay_us(10);
-    LATAbits.LATA12 = 0;
-    while(PORTBbits.RB7 == 0);
-    TMR2 = 0;
-    while(PORTBbits.RB7 == 1);
-    u32 pulseWidth = TMR2;
+    while(PORTBbits.RB2 == 0);              // wait until echo back pulse starts
+    TMR2 = 0;                               // set timer to 0
+    while(PORTBbits.RB2 == 1);              // wait until echo back pulse ends
+    u32 pulseWidth = TMR2;                  // get current timer value
     pulseWidth = pulseWidth * 666 / 1000;   // timer interval to us
-    pulseWidth = pulseWidth >> 1;   //pulseWidth / 2 -> halbe strecke
-    u32 distance = pulseWidth * 3432 / 100000;
+    pulseWidth = pulseWidth >> 1;           // one way is half the time 
+    u32 distance = pulseWidth * 3432 / 100000;  //calc distance in cm from time in us
     return distance;
 }
 

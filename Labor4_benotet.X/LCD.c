@@ -18,7 +18,6 @@ void initI2C(){
     I2C3CONbits.A10M = 0;       // 7 bit address
     I2C3CONbits.DISSLW = 0;     // high speed mode (400kHz)
     
-    
     I2C3CONbits.ON = 1;         // start I2C
 }
 
