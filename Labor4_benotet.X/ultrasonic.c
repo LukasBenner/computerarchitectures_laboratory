@@ -63,12 +63,10 @@ void initUltraSonic(){
 }
 
 u32 readSensor(){
-    //setCursor(0,0);
     u32 lowerValue = CCP2BUF;
     u32 higherValue = CCP2BUF;
     u32 diff = higherValue - lowerValue;
     diff = diff >> 1;   //halbe strecke
-
     // 125 × (24M / 64) / 2 × (64/24MHz) × 343.2m/s) / 1000000 = 2.145 cm (min distance)
     // 25000 × (24M / 64) / 2 × (64/24MHz) × 343.2m/s) / 1000000 = 429 cm (max distance)
     // (64/24M) × 343.2) = 0.0009152
@@ -99,7 +97,6 @@ u32 readSensorASM(){
 
 void initFallBackUltraSonic(){
     initOutputCompare();
-    
     TRISAbits.TRISA9 = 1;       //RA9 as input
     PR2 = 0xFFFF;               // period register to max value
     T2CONbits.TCKPS = 0b100;    // prescaler 1:16
