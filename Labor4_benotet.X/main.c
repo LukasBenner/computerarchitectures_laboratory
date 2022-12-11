@@ -36,7 +36,18 @@ u32 distanceBuffer[BUFFER_LENGTH];
  u8 const compile_time[9]    = __TIME__;     // hh:mm:ss
 
  void initTime(){
-     
+    OSCCON<1>=1;            // enable SOSC
+    OSCCON<22>=1;           // SOSC ready
+    RTCWREN = 1;            // To write RTCTIME and RTCDATE
+
+    RTCCONCLR=0x8000;       // turn off the RTCC
+    while(RTCCON&0x40);     // wait for clock to be turned off
+    RTCTIME = compile_time; // update the time
+    RTCDATE = compile_date; // update the date
+    RTCCONSET = 0x8000;     // turn on the RTCC
+    while(!(RTCCON&0x40));  // wait for clock to be turned on
+    RTCWREN = 0;            // disable the RTCC write
+
  }
  
  
@@ -44,6 +55,8 @@ void setup() {
 	SYSTEM_Initialize();  // set 24 MHz clock for CPU and Peripheral Bus
                           // clock period = 41,667 ns = 0,0417 us
     initI2C();
+
+    initTime();
     
 }
 
