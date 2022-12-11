@@ -98,19 +98,25 @@ u32 readSensorASM(){
 void initFallBackUltraSonic(){
     TRISAbits.TRISA12 = 0;
     TRISBbits.TRISB7 = 1;   //RB7 as input
+    
+    PR2 = 0xFFFF;               // period register to max value
+    T2CONbits.TCKPS = 0b100;    // prescaler 1:16
+    T2CONbits.TCS = 0;          // internal clock
+    T2CONbits.TGATE = 0;        // Gated time accumulation is disabled
+    TMR2 = 0;                   // clear timer register
+    T2CONbits.ON = 1;           // start Timer
 }
 
 u32 readSensorFallBack(){
     LATAbits.LATA12 = 1;
     delay_us(10);
     LATAbits.LATA12 = 0;
-    u32 pulseWidth = 0; //in 
     while(PORTBbits.RB7 == 0);
-    while(PORTBbits.RB7 == 1){
-        delay_us(10);
-        pulseWidth += 10;
-    }
-    pulseWidth = pulseWidth >> 1;   //halbe strecke
+    TMR2 = 0;
+    while(PORTBbits.RB7 == 1);
+    u32 pulseWidth = TMR2;
+    pulseWidth = pulseWidth * 666 / 1000;   // timer interval to us
+    pulseWidth = pulseWidth >> 1;   //pulseWidth / 2 -> halbe strecke
     u32 distance = pulseWidth * 3432 / 100000;
     return distance;
 }
@@ -118,8 +124,9 @@ u32 readSensorFallBack(){
 void __ISR(_CCP2_VECTOR, IPL3SOFT) inputCaptureHandler(void)
 {
     u32 distance = readSensor();
-    char str[10];
-    sprintf(str, "%d", distance);
-    writeLCD(str, 10);
+    char str[16];
+    sprintf(str, "Distance: %d cm", distance);
+    setCursor(0, 0);
+    writeLCD(str, 16);
     IFS2bits.CCP2IF = 0;
 }

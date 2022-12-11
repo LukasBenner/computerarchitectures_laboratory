@@ -44,9 +44,10 @@ int main(int argc, char** argv) {
     
     while(1){
         u32 distance = readSensorFallBack();
-        char str[10];
-        sprintf(str, "%d", distance);
-        //writeLCD(str, 10);
+        char str[16];
+        sprintf(str, "Distance: %d cm", distance);
+        //setCursor(0, 0);
+        //writeLCD(str, 16);
     }
     
 
