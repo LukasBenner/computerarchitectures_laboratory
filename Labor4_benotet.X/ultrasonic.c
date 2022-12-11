@@ -13,8 +13,7 @@ extern u8 bufferIndex;
 extern u32 distanceBuffer[];
 
 void initInputCapture(){
-    TRISBbits.TRISB2 = 1;   //RB2 as input
-    ANSELBbits.ANSB2 = 0;
+    TRISAbits.TRISA9 = 1;   //RA9 as input
     
     CCP2CON1 = 0;
     CCP2CON2 = 0;
@@ -26,7 +25,7 @@ void initInputCapture(){
     CCP2CON1bits.OPS = 0b0001;       //Interrupt every 2nd input capture event
     CCP2CON1bits.TMRPS = 0b11;     // Set the clock prescaler (1:64)
     CCP2CON1bits.SYNC = 0b00000; // Select Sync/Trigger source (Self-sync)
-    RPINR2bits.ICM2R = 0b01000;   //ICM2 = RP8 = RB2
+    RPINR2bits.ICM2R = 0b11000;   //ICM2 = RP24 = RA9
     
     IPC19bits.CCP2IP = 3;
     IPC19bits.CCP2IS = 1;
@@ -101,8 +100,7 @@ u32 readSensorASM(){
 void initFallBackUltraSonic(){
     initOutputCompare();
     
-    TRISBbits.TRISB2 = 1;   //RB2 as input
-    ANSELBbits.ANSB2 = 0;
+    TRISAbits.TRISA9 = 1;       //RA9 as input
     PR2 = 0xFFFF;               // period register to max value
     T2CONbits.TCKPS = 0b100;    // prescaler 1:16
     T2CONbits.TCS = 0;          // internal clock -> 24MHz
@@ -112,9 +110,9 @@ void initFallBackUltraSonic(){
 }
 
 u32 readSensorFallBack(){
-    while(PORTBbits.RB2 == 0);              // wait until echo back pulse starts
+    while(PORTAbits.RA9 == 0);              // wait until echo back pulse starts
     TMR2 = 0;                               // set timer to 0
-    while(PORTBbits.RB2 == 1);              // wait until echo back pulse ends
+    while(PORTAbits.RA9 == 1);              // wait until echo back pulse ends
     u32 pulseWidth = TMR2;                  // get current timer value
     pulseWidth = pulseWidth * 666 / 1000;   // timer interval to us
     pulseWidth = pulseWidth >> 1;           // one way is half the time 
