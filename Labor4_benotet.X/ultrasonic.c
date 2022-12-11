@@ -8,6 +8,7 @@ typedef unsigned int u32;
 
 void writeLCD (char* str, u32 len);
 void delay_us(unsigned int us);
+extern u32 distance;
 
 void initUltraSonic(){
     // Output Compare PWM Signal
@@ -123,10 +124,6 @@ u32 readSensorFallBack(){
 
 void __ISR(_CCP2_VECTOR, IPL3SOFT) inputCaptureHandler(void)
 {
-    u32 distance = readSensor();
-    char str[16];
-    sprintf(str, "Distance: %d cm", distance);
-    setCursor(0, 0);
-    writeLCD(str, 16);
+    distance = readSensor();
     IFS2bits.CCP2IF = 0;
 }

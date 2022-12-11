@@ -26,6 +26,12 @@ void initUltraSonic();
 u32 readSensorFallBack();
 void initFallBackUltraSonic();
 
+#define BUFFER_LENGTH 2
+
+u32 distance = 0;
+u8 bufferIndex = 0;
+u32 distanceBuffer[BUFFER_LENGTH];
+
 
 void setup() { 
 	SYSTEM_Initialize();  // set 24 MHz clock for CPU and Peripheral Bus
@@ -43,11 +49,23 @@ int main(int argc, char** argv) {
     //clearLCD();
     
     while(1){
-        u32 distance = readSensorFallBack();
-        char str[16];
-        sprintf(str, "Distance: %d cm", distance);
-        //setCursor(0, 0);
-        //writeLCD(str, 16);
+        distance = readSensorFallBack();
+        //max value of distance should be < 450
+        if(distance < 450){
+            distanceBuffer[bufferIndex] = distance;
+            bufferIndex++;
+        }
+        
+        if(bufferIndex == BUFFER_LENGTH){
+            u32 average = (distanceBuffer[0] + distanceBuffer[1]);
+            average = average >> 1;
+            char str[16];
+            sprintf(str, "Distance: %d cm", average);
+            //setCursor(0, 0);
+            //writeLCD(str, 16);
+            bufferIndex = 0;
+        }
+          
     }
     
 
