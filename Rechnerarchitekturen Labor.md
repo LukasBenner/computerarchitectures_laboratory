@@ -1,6 +1,6 @@
 # Rechnerarchitekturen Labor
 
-Lea Soffel () und Lukas Benner (3277496)
+Lea Soffel (4962704) und Lukas Benner (3277496)
 
 ## Aufbau
 
@@ -43,9 +43,19 @@ Der Ultraschall Sensor ist wie folgt angeschlossen:
   
   - Trigger Signal durch **Output Compare Unit**
     
-    - PWM Signal
+    - Mode: Dual Edge Compare
+
+    - Trigger Signal: 10us
+
+    - Zeit, die Ultraschall Sensor wartet: 8 * 1/40kHz 
+
+    - Antwortzeit von Ultraschall Sensor: 38ms
+
+    - Zeit für eine Periode: t = 10us + 8 * 1/40kHz + 38ms = 38.21 ms 
+
+    ![UltraSchallSensor.jpg](/home/lukas/Projects/Rechnerarchitektur/images/UltraSchallSensor.jpg)
     
-    - Periode: PR = 0xFFFF weil 0xFFFF × 16/24MHz = 43.69 ms
+    - Periode: PR = 0xFFFF weil 0xFFFF × 16/24MHz = 43.69 ms, so hat man 43.69 ms - 38.21 ms = 5.48ms Puffer für andere Operationen
     
     - Steigende Flanke: RA = 0
     
@@ -55,9 +65,9 @@ Der Ultraschall Sensor ist wie folgt angeschlossen:
     
     - Das Signal konnte nicht über einen Gated Timer ausgewertet werden weil die TxCK Pins nicht für 5V geeignet sind.
     
-    - Der steigender Flanke auf RA9 wird das Timer Register auf 0 gesetzt
+    - Bei steigender Flanke an RA9 wird das Timer Register auf 0 gesetzt
     
-    - Bei der fallenden Flanke auf RA9 wird das Timer Register ausgelesen
+    - Bei fallendende Flanke an RA9 wird das Timer Register ausgelesen
     
     - Konvertierung der Timerintervalle zu μs:
       
