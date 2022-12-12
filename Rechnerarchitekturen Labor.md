@@ -33,7 +33,7 @@ Der Ultraschall Sensor ist wie folgt angeschlossen:
 | Echo     | RA9 (5V tolerant) |
 | GND      | GND               |
 
-![hardware.jpg](/home/lukas/Projects/Rechnerarchitektur/images/hardware.jpg)
+![hardware.jpg](images/hardware.jpg)
 
 ## Programmierung
 
@@ -44,16 +44,16 @@ Der Ultraschall Sensor ist wie folgt angeschlossen:
   - Trigger Signal durch **Output Compare Unit**
     
     - Mode: Dual Edge Compare
-
+    
     - Trigger Signal: 10us
-
+    
     - Zeit, die Ultraschall Sensor wartet: 8 * 1/40kHz 
-
+    
     - Antwortzeit von Ultraschall Sensor: 38ms
-
+    
     - Zeit für eine Periode: t = 10us + 8 * 1/40kHz + 38ms = 38.21 ms 
-
-    ![UltraSchallSensor.jpg](/home/lukas/Projects/Rechnerarchitektur/images/UltraSchallSensor.jpg)
+    
+    ![UltraSchallSensor.jpg](images/UltraschallSensorPeriode.jpg)
     
     - Periode: PR = 0xFFFF weil 0xFFFF × 16/24MHz = 43.69 ms, so hat man 43.69 ms - 38.21 ms = 5.48ms Puffer für andere Operationen
     
@@ -61,7 +61,7 @@ Der Ultraschall Sensor ist wie folgt angeschlossen:
     
     - Fallende Flanke: RB = 0xF weil 0xF × 16/24MHz = 10 μs
   
-  - Echo Signal über RA9
+  - 
     
     - Das Signal konnte nicht über einen Gated Timer ausgewertet werden weil die TxCK Pins nicht für 5V geeignet sind.
     
