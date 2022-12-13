@@ -97,3 +97,53 @@ Der Ultraschall Sensor ist wie folgt angeschlossen:
   - Die Register der RTCC werden mit dem Wert des Präprozessor Makros `__TIME__` initialisiert.
   
   - Die aktuelle Zeit wird bei jedem Durchlauf der while(1) Schleife abgefragt, in einen String umgewandelt und auf dem LCD ausgegeben.
+
+
+### Zusatzfunktionen
+
+- Input Capture Unit für Rückgabewert des Ultraschall Sensor
+- Output Compare für Impulse des Trigger Eingangs am Ultraschall Sensor
+- Werte über 420 werden ausgeschlossen, Mittelwert wird immer über die letzten 4 Werte gebildet (Ring Buffer)
+- Anzeigen der Zeit (Initialisiert mit Compile-Zeit)
+- Anzeigen der Entfernung mit einem Balken (nah -> Balken "voll")
+- Individuelles Setzen der Zeit über Taster
+- Verwendung von Interrupts
+
+
+### Bedienung
+
+Nach dem Runterladen des Programs sollte auf dem Display die Distanz in cm und der Balken zu sehen sein:
+
+<img title="" src="images/Start.jpeg" alt="Start.jpeg" width="350">
+
+Drückt man jetzt auf den Button S3, wird im Display statt dem Balken die aktuelle Zeit angezeigt:
+
+<img title="" src="images/Time.jpeg" alt="Time.jpeg" width="350">
+
+
+## Änderung der Zeit
+
+Drückt man auf den Button S1 kann eine eigene Zeit konfiguriert werden:
+
+<img title="" src="images/OwnTime.jpeg" alt="OwnTime.jpeg" width="350">
+
+Mithilfe des Potentiometers kann eine beliebige Zahl eingestellt werden:
+
+<img title="" src="images/SetHours.jpeg" alt="SetHours.jpeg" width="350">
+
+Drückt man auf S2 wechselt man zur Konfiguration der Minuten, mit dem Potentiometer kann dann wieder die Minutenzahl eingestellt werden:
+
+<img title="" src="images/SetMinutes.jpeg" alt="SetMinutes.jpeg" width="350">
+
+Drückt man erneut auf S2 wechselt man zur Konfiguration der Sekunden, mit dem Potentiometer kann die Sekundenzahl eingestellt werden:
+
+<img title="" src="images/SetSeconds.jpeg" alt="SetSeconds.jpeg" width="350">
+
+Die Zeit wird automatisch geändert sobald die Zahlen geändert wurden.
+
+Drückt man auf S1 wird das Konfigurationsmenu verlassen und die neue Zeit übernommen:
+
+<img title="" src="images/SetOwnTime.jpeg" alt="SetOwnTime.jpeg" width="350">
+
+
+Die aktuelle Zeit ist dann überschrieben, man kann nur per "Reset" wieder zurück zur Compile Zeit, allerdings ist diese ja nicht mehr korrekt.
