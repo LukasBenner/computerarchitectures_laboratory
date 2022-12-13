@@ -13,7 +13,6 @@ void delay_us(unsigned int us);
 
 #define BUFFER_LENGTH 4
 
-u32 distance;
 u8 bufferIndex = 0;
 u32 distanceBuffer[BUFFER_LENGTH];   // ring buffer
 
@@ -76,9 +75,9 @@ u32 readSensor(){
     u32 higherValue = CCP2BUF;
     u32 diff = higherValue - lowerValue;
     diff = diff >> 1;   //halbe strecke
-    // 125 × (24M / 64) / 2 × (64/24MHz) × 343.2m/s) / 1000000 = 2.145 cm (min distance)
-    // 25000 × (24M / 64) / 2 × (64/24MHz) × 343.2m/s) / 1000000 = 429 cm (max distance)
-    // (64/24M) × 343.2) = 0.0009152
+    // 125 * (24M / 64) / 2 * (64/24MHz) * 343.2m/s) / 1000000 = 2.145 cm (min distance)
+    // 25000 * (24M / 64) / 2 * (64/24MHz) * 343.2m/s) / 1000000 = 429 cm (max distance)
+    // (64/24M) * 343.2) = 0.0009152
     u32 distance = diff * 9152 / 100000;
     return distance;
 }*/
@@ -108,12 +107,14 @@ u32 readSensorASM(){
 void __ISR(_CCP2_VECTOR, IPL3SOFT) inputCaptureHandler(void)
 {
     // get distance
-    distance = readSensorASM();
+    u32 distance = readSensorASM();
+    // if the distance is > 420 it's very likely to be a false value
     if(distance > 420)
         distance = 420;
+        // clips values to a max of 420
 
     distanceBuffer[bufferIndex] = distance;
     bufferIndex++;
     bufferIndex = bufferIndex % BUFFER_LENGTH;
-    IFS2bits.CCP2IF = 0;
+    IFS2bits.CCP2IF = 0;    // reset interrupt flag
 }
