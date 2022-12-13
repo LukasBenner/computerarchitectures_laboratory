@@ -71,9 +71,9 @@ void initUltraSonic(){
 
 /* // method to get distance of sensor without ASM
 u32 readSensor(){
-    u32 lowerValue = CCP2BUF;
-    u32 higherValue = CCP2BUF;
-    u32 diff = higherValue - lowerValue;
+    u32 risingEdge = CCP2BUF;
+    u32 fallingEdge = CCP2BUF;
+    u32 diff = fallingEdge - risingEdge;
     diff = diff >> 1;   //halbe strecke
     // 125 * (24M / 64) / 2 * (64/24MHz) * 343.2m/s) / 1000000 = 2.145 cm (min distance)
     // 25000 * (24M / 64) / 2 * (64/24MHz) * 343.2m/s) / 1000000 = 429 cm (max distance)
@@ -88,13 +88,13 @@ u32 readSensorASM(){
     u32 multiplier = 9152;
     asm volatile(
         "la $t2, %1         \n\t"       // t2 = &CCP2BUF
-        "lh $t0, 0($t2)      \n\t"      //lowerValue
-        "lh $t1, 0($t2)      \n\t"      //higherValue
-        "sub $t0, $t1, $t0  \n\t"       //diff = higher - lower
-        "srl $t0, $t0, 1    \n\t"       //travelTime = diff / 2
-        "mul $t0, $t0, %2   \n\t"       //travelTime * 9152
+        "lh $t0, 0($t2)      \n\t"      // rising edge
+        "lh $t1, 0($t2)      \n\t"      // falling edge
+        "sub $t0, $t1, $t0  \n\t"       // diff = falling - rising
+        "srl $t0, $t0, 1    \n\t"       // travelTime = diff / 2
+        "mul $t0, $t0, %2   \n\t"       // travelTime * 9152
         "li $t1, 100000     \n\t"
-        "div $t0, $t1       \n\t"       //distance / 100000
+        "div $t0, $t1       \n\t"       // distance / 100000
         "mflo %0            \n\t"
         : "=r" (value)
         : "m"(CCP2BUF), "r"(multiplier)

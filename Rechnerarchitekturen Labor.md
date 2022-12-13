@@ -33,7 +33,6 @@ Der Ultraschall Sensor ist wie folgt angeschlossen:
 | Echo     | RA9 (5V tolerant) |
 | GND      | GND               |
 
-
 <img title="" src="images/hardware.jpg" alt="hardware.jpg" width="500">
 
 ## Programmierung
@@ -53,7 +52,7 @@ Der Ultraschall Sensor ist wie folgt angeschlossen:
     - Antwortzeit von Ultraschall Sensor: 38ms
     
     - Zeit für eine Periode: t = 10us + 8 * 1/40kHz + 38ms = 38.21 ms 
-    
+      
       <img title="" src="images/UltraschallSensorPeriode.jpg" alt="UltraschallSensorPeriode.jpg" width="350">
     
     - Periode: PR = 0xFFFF weil 0xFFFF × 16/24MHz = 43.69 ms, so hat man 43.69 ms - 38.21 ms = 5.48ms Puffer für andere Operationen
@@ -62,22 +61,30 @@ Der Ultraschall Sensor ist wie folgt angeschlossen:
     
     - Fallende Flanke: RB = 0xF weil 0xF × 16/24MHz = 10 μs
   
-  - - Das Signal konnte nicht über einen Gated Timer ausgewertet werden weil die TxCK Pins nicht für 5V geeignet sind.
+  - Echo Signal wird über die **Input Capture Unit** aufgenommen
     
-    - Bei steigender Flanke an RA9 wird das Timer Register auf 0 gesetzt
+    - Die Input Capture Unit nutzt als Eingabe den Pin RA9 (5V tolerant)
     
-    - Bei fallendende Flanke an RA9 wird das Timer Register ausgelesen
+    - Sie wird im *Every Rise/Fall (16-bit capture)* Modus betrieben
     
-    - Konvertierung der Timerintervalle zu μs:
+    - Nach 2 Capture Events wird ein Interrupt ausgelöst. So enthält der Buffer die Zeistempel der steigenden und fallenden Flanke
+    
+    - Die Input Capture Unit wird mit einem Prescaler von 1:64 betrieben
+    
+    - Die Impulsweite wird in einer Interrupt Routine berechnet
+    
+    - Die Umrechnung der Impulsweite in eine Distanz in Assembly. Hier aber die Implementierung in C:
       
-      $time = interval*16/24MHz =    interval * 666 / 1000
-      $
-    
-    - Halbierung der Zeit um die Zeit für eine Strecke zu bekommen
-    
-    - Konvertierung der Zeit in μs zu einer Distanz in cm:
-      
-      $distance = time * 0.034 32 cm∕μs = time * 3432 / 100000$
+      ```c
+      u32 risingEdge = CCP2BUF;
+      u32 fallingEdge = CCP2BUF;
+      u32 diff = fallingEdge - risingEdge;
+      diff = diff >> 1;   //halbe strecke
+      // 125 * (24M / 64) / 2 * (64/24MHz) * 343.2m/s) / 1000000 = 2.145 cm (min distance)
+      // 25000 * (24M / 64) / 2 * (64/24MHz) * 343.2m/s) / 1000000 = 429 cm (max distance)
+      // (64/24M) * 343.2) = 0.0009152
+      u32 distance = diff * 9152 / 100000;
+      ```
 
 - Ausgabe auf dem LCD
   
@@ -89,9 +96,21 @@ Der Ultraschall Sensor ist wie folgt angeschlossen:
   
   - Die daraus resultierende Distanz ist ungefähr 430 cm
   
-  - Alle Werte über 450 cm können also ignoriert werden
+  - Alle Werte über 420 cm können also höchstwahrscheinlich ignoriert werden
   
-  - Es wird der Mittelwert aus 2 gültigen Werten des Ultraschall Sensors gebildet
+  - Alle Werte über 420 cm werden abgeschnitten.
+  
+  - Es wird ein Ringpuffer mit 4 Werte verwendet, um einen Mittelwert zu bilden
+
+- Anzeigen eines Balkens zur Visualisierung der Distanz
+  
+  - Als maximale Distanz wurde 64 cm gewählt
+  
+  - Bei 16 Spalten des LCDs ergibt das eine Spalte pro 4 cm
+  
+  - Es wird die Differenz zwischen der Distanz und dem Maxmimalwert 64 gebildet
+  
+  - $barLength = (64 - distance) / 4$
 
 - Anzeigen der Uhrzeit in der zweiten Zeile des LCDs
   
@@ -99,6 +118,13 @@ Der Ultraschall Sensor ist wie folgt angeschlossen:
   
   - Die aktuelle Zeit wird bei jedem Durchlauf der while(1) Schleife abgefragt, in einen String umgewandelt und auf dem LCD ausgegeben.
 
+- Konfiguration der Uhrzeit über ein extra Menü
+  
+  - Über den Taster S1 kann das Menü aufgerufen werden
+  
+  - Mit dem Taster S2 kann man zwischen Stunden, Minuten und Sekunden wechseln
+  
+  - Mit dem Potentiometer kann der jeweilige Wert eingestellt werden
 
 ### Zusatzfunktionen
 
@@ -110,7 +136,6 @@ Der Ultraschall Sensor ist wie folgt angeschlossen:
 - Individuelles Setzen der Zeit über Taster
 - Verwendung von Interrupts
 
-
 ### Bedienung
 
 Nach dem Runterladen des Programs sollte auf dem Display die Distanz in cm und der Balken zu sehen sein:
@@ -121,18 +146,17 @@ Drückt man jetzt auf den Button S3, wird im Display statt dem Balken die aktuel
 
 <img title="" src="images/Time.jpeg" alt="Time.jpeg" width="350">
 
-
 #### Änderung der Zeit
 
 Drückt man auf den Button S1 kann eine eigene Zeit konfiguriert werden:
 
 <img title="" src="images/OwnTime.jpeg" alt="OwnTime.jpeg" width="350">
 
-Mithilfe des Potentiometers kann eine beliebige Zahl eingestellt werden:
+Mithilfe des Potentiometers kann eine Zahl zwischen 0 und 23 eingestellt werden:
 
 <img title="" src="images/SetHours.jpeg" alt="SetHours.jpeg" width="350">
 
-Drückt man auf S2 wechselt man zur Konfiguration der Minuten, mit dem Potentiometer kann dann wieder die Minutenzahl eingestellt werden:
+Drückt man auf S2 wechselt man zur Konfiguration der Minuten, mit dem Potentiometer kann dann wieder die Minutenzahl zwischen 0 und 59 eingestellt werden:
 
 <img title="" src="images/SetMinutes.jpeg" alt="SetMinutes.jpeg" width="350">
 
@@ -145,6 +169,5 @@ Die Zeit wird automatisch geändert sobald die Zahlen geändert wurden.
 Drückt man auf S1 wird das Konfigurationsmenu verlassen und die neue Zeit übernommen:
 
 <img title="" src="images/SetOwnTime.jpeg" alt="SetOwnTime.jpeg" width="350">
-
 
 Die aktuelle Zeit ist dann überschrieben, man kann nur per "Reset" wieder zurück zur Compile Zeit, allerdings ist diese ja nicht mehr korrekt.
