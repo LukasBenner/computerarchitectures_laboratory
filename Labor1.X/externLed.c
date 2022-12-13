@@ -12,7 +12,7 @@ void externLed(){
      * LED mit 120 Ohm Vorwiederstand
      * 3,3V - 2,1V = 1,2V
      * R = U/I = 1,2V / 10mA = 120 Ohm
-     * */
+     */
     TRISBSET = 0b001000000000;    //Button on Port B9 as input
     TRISACLR = 0x4000;           //LED on Port A14 as output
     LATACLR = 0x4000;

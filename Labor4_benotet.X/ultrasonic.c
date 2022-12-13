@@ -64,6 +64,7 @@ void initUltraSonic(){
     initInputCapture();
 }
 
+/*
 u32 readSensor(){
     u32 lowerValue = CCP2BUF;
     u32 higherValue = CCP2BUF;
@@ -74,7 +75,7 @@ u32 readSensor(){
     // (64/24M) × 343.2) = 0.0009152
     u32 distance = diff * 9152 / 100000;
     return distance;
-}
+}*/
 
 
 u32 readSensorASM(){
@@ -100,7 +101,7 @@ u32 readSensorASM(){
 void __ISR(_CCP2_VECTOR, IPL3SOFT) inputCaptureHandler(void)
 {
     distance = readSensorASM();
-    if(distance < 450){
+    if(distance < 420){
         distanceBuffer[bufferIndex] = distance;
         bufferIndex++;
         bufferIndex = bufferIndex % BUFFER_LENGTH;

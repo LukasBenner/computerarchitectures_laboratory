@@ -5,6 +5,8 @@
 typedef unsigned char u8;
 typedef unsigned int u32;
 
+void writeLCD (char* str, u32 len);
+void setCursor(u8 row, u8 col);
 
  char const compile_date[12]   = __DATE__;     // Mmm dd yyyy
  char const compile_time[9]    = __TIME__;     // hh:mm:ss
@@ -63,3 +65,12 @@ void convertTime(u32 time, char outTime[8]){
     
     sprintf(outTime, "%d%d:%d%d:%d%d",(time>>28)&0b0111, (time>>24)&0b1111, (time>>20)&0b0111, (time>>16)&0b1111, (time>>12)&0b0111, (time>>8)&0b1111);
 }
+
+void showTime(){
+    char outTime[8];
+    u32 time = readTime();
+    convertTime(time, outTime);
+    setCursor(1, 0);
+    writeLCD(outTime, 8);
+}
+

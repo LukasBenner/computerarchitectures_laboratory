@@ -21,15 +21,11 @@ void writeLCD (char* str, u32 len);
 void setCursor(u8 row, u8 col);
 void delay_us(unsigned int us);
 void initUltraSonic();
-u32 readSensorFallBack();
-void initFallBackUltraSonic();
-u32 readTime();
-void convertTime(u32 time, char outTime[8]);
+void showBar(u32 distance);
+void showTime();
 
 extern u32 distanceBuffer[];
 
-extern char const compile_time[9];
-  
 void setup() { 
 	SYSTEM_Initialize();  // set 24 MHz clock for CPU and Peripheral Bus
                           // clock period = 41,667 ns = 0,0417 us
@@ -40,10 +36,28 @@ void setup() {
 
     initLCD();
     clearLCD();
+    
+    //init s3 to switch mode
+    TRISCSET = 0b010000;        //Button on Port C4 as input
+}
+
+u8 checkButton(u8 buttonState){
+
+    uint32_t button = PORTCbits.RC4;
+    if(button == 0){  
+        buttonState = 1 - buttonState; //toggle
+        while(button == 0)     //prevent multiple clicks in one press
+        {
+            button = PORTCbits.RC4;
+        }
+        clearLCD();
+    }
+    return buttonState;
 }
 
 int main(int argc, char** argv) {
     setup();
+    u8 buttonState = 0;
     
     while(1){
         u32 average = distanceBuffer[0] + distanceBuffer[1] + distanceBuffer[2] + distanceBuffer[3];
@@ -53,11 +67,14 @@ int main(int argc, char** argv) {
         setCursor(0, 0);
         writeLCD(str, 16);
         
-        char outTime[8];
-        u32 time = readTime();
-        convertTime(time, outTime);
-        setCursor(1, 0);
-        writeLCD(outTime, 8);
+        
+        buttonState = checkButton(buttonState);
+        if(buttonState == 0){
+            showTime();
+        }
+        else{
+            showBar(average);
+        }
     }
     return (EXIT_SUCCESS);
 }
