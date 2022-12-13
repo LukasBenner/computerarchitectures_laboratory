@@ -21,6 +21,8 @@ typedef unsigned int u32;
     RTCCON2bits.CLKSEL = 0b00;  // select SOSC
     RTCCON1bits.ON = 0;         // turn off the RTCC
     
+    RTCTIME = 0;
+    
     RTCTIMEbits.HRTEN = compile_time[0] - 48;
     RTCTIMEbits.HRONE = compile_time[1] - 48;
     RTCTIMEbits.MINTEN = compile_time[3] - 48;

@@ -8,9 +8,11 @@ typedef unsigned int u32;
 
 void writeLCD (char* str, u32 len);
 void delay_us(unsigned int us);
-extern u32 distance;
-extern u8 bufferIndex;
-extern u32 distanceBuffer[];
+
+#define BUFFER_LENGTH 4
+u32 distance;
+u8 bufferIndex = 0;
+u32 distanceBuffer[BUFFER_LENGTH];
 
 void initInputCapture(){
     TRISAbits.TRISA9 = 1;   //RA9 as input
@@ -95,34 +97,13 @@ u32 readSensorASM(){
     return value;
 }
 
-void initFallBackUltraSonic(){
-    initOutputCompare();
-    TRISAbits.TRISA9 = 1;       //RA9 as input
-    PR2 = 0xFFFF;               // period register to max value
-    T2CONbits.TCKPS = 0b100;    // prescaler 1:16
-    T2CONbits.TCS = 0;          // internal clock -> 24MHz
-    T2CONbits.TGATE = 0;        // Gated time accumulation is disabled
-    TMR2 = 0;                   // clear timer register
-    T2CONbits.ON = 1;           // start Timer
-}
-
-u32 readSensorFallBack(){
-    while(PORTAbits.RA9 == 0);              // wait until echo back pulse starts
-    TMR2 = 0;                               // set timer to 0
-    while(PORTAbits.RA9 == 1);              // wait until echo back pulse ends
-    u32 pulseWidth = TMR2;                  // get current timer value
-    pulseWidth = pulseWidth * 666 / 1000;   // timer interval to us
-    pulseWidth = pulseWidth >> 1;           // one way is half the time 
-    u32 distance = pulseWidth * 3432 / 100000;  //calc distance in cm from time in us
-    return distance;
-}
-
 void __ISR(_CCP2_VECTOR, IPL3SOFT) inputCaptureHandler(void)
 {
-    distance = readSensor();
+    distance = readSensorASM();
     if(distance < 450){
         distanceBuffer[bufferIndex] = distance;
         bufferIndex++;
+        bufferIndex = bufferIndex % BUFFER_LENGTH;
     }
     IFS2bits.CCP2IF = 0;
 }
