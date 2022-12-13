@@ -101,10 +101,11 @@ u32 readSensorASM(){
 void __ISR(_CCP2_VECTOR, IPL3SOFT) inputCaptureHandler(void)
 {
     distance = readSensorASM();
-    if(distance < 420){
-        distanceBuffer[bufferIndex] = distance;
-        bufferIndex++;
-        bufferIndex = bufferIndex % BUFFER_LENGTH;
-    }
+    if(distance > 420)
+        distance = 420;
+
+    distanceBuffer[bufferIndex] = distance;
+    bufferIndex++;
+    bufferIndex = bufferIndex % BUFFER_LENGTH;
     IFS2bits.CCP2IF = 0;
 }

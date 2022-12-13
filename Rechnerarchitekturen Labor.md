@@ -61,9 +61,7 @@ Der Ultraschall Sensor ist wie folgt angeschlossen:
     
     - Fallende Flanke: RB = 0xF weil 0xF × 16/24MHz = 10 μs
   
-  - 
-    
-    - Das Signal konnte nicht über einen Gated Timer ausgewertet werden weil die TxCK Pins nicht für 5V geeignet sind.
+  - - Das Signal konnte nicht über einen Gated Timer ausgewertet werden weil die TxCK Pins nicht für 5V geeignet sind.
     
     - Bei steigender Flanke an RA9 wird das Timer Register auf 0 gesetzt
     
