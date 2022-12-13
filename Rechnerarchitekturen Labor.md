@@ -63,7 +63,7 @@ Der Ultraschall Sensor ist wie folgt angeschlossen:
     
     - Steigende Flanke: RA = 0
     
-    - Fallende Flanke: RB = 0xF weil 0xF × 16/24MHz = 10 μs
+    - Fallende Flanke: RB = 0xF weil 0xF × 16/24MHz = 10 us
   
   - Echo Signal wird über die **Input Capture Unit** aufgenommen
     
