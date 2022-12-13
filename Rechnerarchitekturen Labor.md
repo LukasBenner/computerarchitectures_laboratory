@@ -1,6 +1,10 @@
 # Rechnerarchitekturen Labor
 
-Lea Soffel (4962704) und Lukas Benner (3277496)
+Matrikelnummern:
+
+- 4962704
+
+- 3277496
 
 ## Aufbau
 
@@ -71,9 +75,9 @@ Der Ultraschall Sensor ist wie folgt angeschlossen:
     
     - Die Input Capture Unit wird mit einem Prescaler von 1:64 betrieben
     
-    - Die Impulsweite wird in einer Interrupt Routine berechnet
+    - Die Impulsweite wird in einer **Interrupt Routine** berechnet
     
-    - Die Umrechnung der Impulsweite in eine Distanz in Assembly. Hier aber die Implementierung in C:
+    - Die Umrechnung der Impulsweite in eine Distanz erfolgt in Assembly. Hier aber die Implementierung in C:
       
       ```c
       u32 risingEdge = CCP2BUF;
@@ -134,7 +138,7 @@ Der Ultraschall Sensor ist wie folgt angeschlossen:
 - Anzeigen der Zeit (Initialisiert mit Compile-Zeit)
 - Anzeigen der Entfernung mit einem Balken (nah -> Balken "voll")
 - Individuelles Setzen der Zeit über Taster
-- Verwendung von Interrupts
+- Verwendung von Interrupts für Input Capture Unit
 
 ### Bedienung
 
