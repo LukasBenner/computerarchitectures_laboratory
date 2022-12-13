@@ -33,7 +33,8 @@ Der Ultraschall Sensor ist wie folgt angeschlossen:
 | Echo     | RA9 (5V tolerant) |
 | GND      | GND               |
 
-![hardware.jpg](images/hardware.jpg)
+
+<img title="" src="images/hardware.jpg" alt="hardware.jpg" width="500">
 
 ## Programmierung
 
