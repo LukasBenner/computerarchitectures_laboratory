@@ -5,6 +5,7 @@
 typedef unsigned char u8;
 typedef unsigned int u32;
 
+/* BEGIN FORWARD DECLARATIONS */
 void writeLCD (char* str, u32 len);
 void setCursor(u8 row, u8 col);
 void delay_us(unsigned int us);
@@ -12,6 +13,7 @@ void delay_us(unsigned int us);
  char const compile_date[12]   = __DATE__;     // Mmm dd yyyy
  char const compile_time[9]    = __TIME__;     // hh:mm:ss
 
+/* method to init RTCC with compile time*/
  
 void stopTime(){
     RTCCON1bits.ON = 0;         // turn off the RTCC
@@ -35,7 +37,7 @@ void initTime(){
     RTCCON2bits.CLKSEL = 0b00;  // select SOSC
     RTCTIME = 0;
 
-    RTCTIMEbits.HRTEN = compile_time[0] - 48;
+    RTCTIMEbits.HRTEN = compile_time[0] - 48;        // -48 to get correct number -> 48 = 0 in ASCII
     RTCTIMEbits.HRONE = compile_time[1] - 48;
     RTCTIMEbits.MINTEN = compile_time[3] - 48;
     RTCTIMEbits.MINONE = compile_time[4] - 48;
@@ -69,6 +71,7 @@ uint16_t readADC(){
     return data;
 }
  
+/* method to read current time from RTCC */
 u32 readTime()
 {
     u32 timeCopy1, timeCopy2;
@@ -86,6 +89,7 @@ u32 readTime()
     }
 }
 
+/* method to convert time to string output */
 void convertTime(u32 time, char outTime[8]){
     
     char HRTEN = (time>>28)&0b0111;
@@ -98,12 +102,13 @@ void convertTime(u32 time, char outTime[8]){
     sprintf(outTime, "%d%d:%d%d:%d%d",(time>>28)&0b0111, (time>>24)&0b1111, (time>>20)&0b0111, (time>>16)&0b1111, (time>>12)&0b0111, (time>>8)&0b1111);
 }
 
+/* method to display time on LCD display */
 void showTime(){
     char outTime[8];
-    u32 time = readTime();
-    convertTime(time, outTime);
+    u32 time = readTime();          // get current time
+    convertTime(time, outTime);     // convert time to string
     setCursor(1, 0);
-    writeLCD(outTime, 8);
+    writeLCD(outTime, 8);           // display time on display
 }
 
 u8 getConfHours(){

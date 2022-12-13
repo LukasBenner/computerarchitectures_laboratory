@@ -20,6 +20,7 @@
 typedef unsigned char u8;
 typedef unsigned int u32;
 
+/* BEGIN FORWARD DECLARATIONS */
 void SYSTEM_Initialize(void);
 void initI2C();
 void initLCD();
@@ -39,21 +40,21 @@ void setSeconds(u8 seconds);
 void setMinutes(u8 minutes);
 void setHours(u8 hours);
 
-extern u32 distanceBuffer[];
+extern u32 distanceBuffer[];     // Ring Buffer with 4 distance values
 u8 barTimeState = 0;
 u8 menuState = MENU_LIVE_DATA;
 u8 timeConfState = CONF_HOURS;
 
 void setup() { 
-	SYSTEM_Initialize();  // set 24 MHz clock for CPU and Peripheral Bus
+    SYSTEM_Initialize();  // set 24 MHz clock for CPU and Peripheral Bus
                           // clock period = 41,667 ns = 0,0417 us
-    initI2C();
-    initTime();
+    initI2C();            // init I2C configurations
+    initTime();           // init RTCC with compile time
     
-    initUltraSonic();
+    initUltraSonic();     // init ultrasonic configurations
 
-    initLCD();
-    clearLCD();
+    initLCD();            // init LCD display
+    clearLCD();           // clear LSD display
     
     //init s3 to switch mode
     TRISCSET = 0b010000;        //Button on Port C4 as input
@@ -90,14 +91,14 @@ u8 checkS2Button(u8 buttonState){
 
 u8 checkS3Button(u8 buttonState){
 
-    uint32_t button = PORTCbits.RC4;
+    uint32_t button = PORTCbits.RC4;    // button state
     if(button == 0){  
-        buttonState = 1 - buttonState; //toggle
-        while(button == 0)     //prevent multiple clicks in one press
+        buttonState = 1 - buttonState; //toggle button state
+        while(button == 0)             //prevent multiple clicks in one press
         {
             button = PORTCbits.RC4;
         }
-        clearLCD();
+        clearLCD();                    // clear display to prevent overlapping of time and bar
     }
     return buttonState;
 }
@@ -108,10 +109,9 @@ void showLiveData(){
     u32 average = distanceBuffer[0] + distanceBuffer[1] + distanceBuffer[2] + distanceBuffer[3];
     average = average >> 2;
     char str[16];
-    sprintf(str, "Distance: %03d cm", average);
-    setCursor(0, 0);
-    writeLCD(str, 16);
-
+    sprintf(str, "Distance: %03d cm", average);     // create distance message
+    setCursor(0, 0);                                
+    writeLCD(str, 16);                              // write distance message
     barTimeState = checkS3Button(barTimeState);
     if(barTimeState == SHOW_TIME){
         showTime();
