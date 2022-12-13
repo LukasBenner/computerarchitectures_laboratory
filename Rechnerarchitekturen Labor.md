@@ -53,7 +53,7 @@ Der Ultraschall Sensor ist wie folgt angeschlossen:
     
     - Zeit für eine Periode: t = 10us + 8 * 1/40kHz + 38ms = 38.21 ms 
     
-    ![UltraSchallSensor.jpg](images/UltraschallSensorPeriode.jpg)
+      <img title="" src="images/UltraschallSensorPeriode.jpg" alt="UltraschallSensorPeriode.jpg" width="350">
     
     - Periode: PR = 0xFFFF weil 0xFFFF × 16/24MHz = 43.69 ms, so hat man 43.69 ms - 38.21 ms = 5.48ms Puffer für andere Operationen
     
