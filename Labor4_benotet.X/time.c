@@ -51,5 +51,13 @@ u32 readTime()
 }
 
 void convertTime(u32 time, char outTime[8]){
-    sprintf(outTime, "%d%d:%d%d:%d%d", (time>>28)&0b11, (time>>24)&0b111, (time>>20)&0b11, (time>>16)&0b111, (time>>12)&0b11, (time>>8)&0b111);
+    
+    char HRTEN = (time>>28)&0b0111;
+    char HRONE = (time>>24)&0b1111;
+    char MINTEN = (time>>20)&0b0111;
+    char MINONE = (time>>16)&0b1111;
+    char SECTEN = (time>>12)&0b0111;
+    char SECONE = (time>>8)&0b1111;
+    
+    sprintf(outTime, "%d%d:%d%d:%d%d",(time>>28)&0b0111, (time>>24)&0b1111, (time>>20)&0b0111, (time>>16)&0b1111, (time>>12)&0b0111, (time>>8)&0b1111);
 }

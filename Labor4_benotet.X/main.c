@@ -31,6 +31,8 @@ void convertTime(u32 time, char outTime[8]);
 u32 distance = 0;
 u8 bufferIndex = 0;
 u32 distanceBuffer[BUFFER_LENGTH];
+
+extern char const compile_time[9];
   
 void setup() { 
 	SYSTEM_Initialize();  // set 24 MHz clock for CPU and Peripheral Bus
@@ -41,8 +43,8 @@ void setup() {
     //initUltraSonic();
     initFallBackUltraSonic();
     
-    //initLCD();
-    //clearLCD();
+    initLCD();
+    clearLCD();
 }
 
 int main(int argc, char** argv) {
@@ -61,16 +63,16 @@ int main(int argc, char** argv) {
             average = average >> 1;
             char str[16];
             sprintf(str, "Distance: %03d cm", average);
-            //setCursor(0, 0);
-            //writeLCD(str, 16);
+            setCursor(0, 0);
+            writeLCD(str, 16);
             bufferIndex = 0;
         }
 
         char outTime[8];
         u32 time = readTime();
         convertTime(time, outTime);
-        //setCursor(1, 0);
-        //writeLCD(outTime, 8);
+        setCursor(1, 0);
+        writeLCD(outTime, 8);
     }
     return (EXIT_SUCCESS);
 }
