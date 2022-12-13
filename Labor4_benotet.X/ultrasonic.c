@@ -70,7 +70,7 @@ void initUltraSonic(){
     initInputCapture();
 }
 
-/* /* method to get distance of sensor without ASM */
+/* // method to get distance of sensor without ASM
 u32 readSensor(){
     u32 lowerValue = CCP2BUF;
     u32 higherValue = CCP2BUF;
