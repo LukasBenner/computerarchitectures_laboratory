@@ -121,7 +121,7 @@ Drückt man jetzt auf den Button S3, wird im Display statt dem Balken die aktuel
 <img title="" src="images/Time.jpeg" alt="Time.jpeg" width="350">
 
 
-## Änderung der Zeit
+#### Änderung der Zeit
 
 Drückt man auf den Button S1 kann eine eigene Zeit konfiguriert werden:
 

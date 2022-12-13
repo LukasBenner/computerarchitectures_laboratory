@@ -35,7 +35,7 @@ void setHours(u8 hours);
 /* END FORWARD DECLARATIONS */
 
 extern u32 distanceBuffer[];            // Ring Buffer with 4 distance values
-u8 barTimeState = 0;
+u8 barTimeState = SHOW_BAR;             // set barTimeState to show the bar
 u8 menuState = MENU_LIVE_DATA;          // set menuState to live data
 u8 timeConfState = CONF_HOURS;          // set confState to hours
 
@@ -44,14 +44,13 @@ void setup() {
     SYSTEM_Initialize();                // set 24 MHz clock for CPU and Peripheral Bus
                                         // clock period = 41,667 ns = 0,0417 us
     initI2C();                          // init I2C configurations
-    initTime();                         // init RTCC with compile time
+    initTime();                         // init RTCC module and set tine to compile time
     
     initUltraSonic();                   // init ultrasonic configurations
 
     initLCD();                          // init LCD display
     clearLCD();                         // clear LSD display
     
-    //init s3 to switch mode
     TRISCSET = 0b010000;                // Button on Port C4 as input
     TRISBSET = 0b1000000000;            // Button on Port B9 as input
     TRISCSET = 0b10000000000;           // Button on Port C10 as input
